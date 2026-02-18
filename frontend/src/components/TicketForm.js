@@ -57,7 +57,7 @@ export default function TicketForm({ onTicketCreated }) {
       setClassified(false);
       onTicketCreated(ticket);
     } catch (err) {
-      setError('Failed to submit ticket. Please try again.');
+      setError(`Error: ${err.message}`);
     } finally {
       setSubmitting(false);
     }
