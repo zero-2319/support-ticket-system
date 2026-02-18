@@ -22,7 +22,7 @@ services:
       DATABASE_URL: postgres://tickets_user:tickets_pass@db:5432/tickets_db
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-dev-secret-key-change-in-production}
       DEBUG: ${DEBUG:-1}
-      ANTHROPIC_API_KEY: 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
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
       ALLOWED_HOSTS: "*"
     ports:
       - "8000:8000"
