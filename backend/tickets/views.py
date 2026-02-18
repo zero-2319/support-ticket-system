@@ -1,14 +1,35 @@
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.db.models import Count, Q
+from django.utils import timezone
 from .models import Ticket
 from .serializers import TicketSerializer
+import os
+import json
 
 
 @api_view(['GET', 'POST'])
 def ticket_list_create(request):
     if request.method == 'GET':
-        queryset = Ticket.objects.all().order_by('-created_at')
+        queryset = Ticket.objects.all()
+
+        category = request.query_params.get('category')
+        priority = request.query_params.get('priority')
+        status_filter = request.query_params.get('status')
+        search = request.query_params.get('search')
+
+        if category:
+            queryset = queryset.filter(category=category)
+        if priority:
+            queryset = queryset.filter(priority=priority)
+        if status_filter:
+            queryset = queryset.filter(status=status_filter)
+        if search:
+            queryset = queryset.filter(
+                Q(title__icontains=search) | Q(description__icontains=search)
+            )
+
         serializer = TicketSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -37,3 +58,4 @@ def ticket_detail(request, pk):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
